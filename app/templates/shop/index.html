@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Shop — CraftBridge{% endblock %}
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col">
+        <h2>Handmade for Every Body</h2>
+        <p class="text-muted">Discover unique pieces from independent makers worldwide</p>
+    </div>
+    <div class="col-auto">
+        {% if not session.get('buyer_id') %}
+        <a href="{{ url_for('buyer.register') }}" class="btn btn-primary">Join as Buyer</a>
+        {% endif %}
+    </div>
+</div>
+
+<form class="row g-2 mb-4" method="GET">
+    <div class="col-md-6">
+        <input type="text" name="search" class="form-control" placeholder="Search products..." value="{{ search }}">
+    </div>
+    <div class="col-md-4">
+        <select name="category" class="form-select">
+            <option value="">All Categories</option>
+            {% for cat in categories %}
+            <option value="{{ cat }}" {{ 'selected' if category == cat }}>{{ cat }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+    </div>
+</form>
+
+{% if products %}
+<div class="row g-4">
+    {% for product in products %}
+    <div class="col-md-6 col-lg-4">
+        <a href="{{ url_for('buyer.product_detail', product_id=product.id) }}" class="text-decoration-none text-dark">
+            <div class="card h-100 hover-shadow">
+                {% if product.images %}
+                <img src="{{ product.images[0] }}" class="card-img-top" style="height:280px;object-fit:contain;background:#f8f8f8;" alt="{{ product.name }}">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height:220px;">
+                    <i class="bi bi-image text-muted fs-1"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted small">
+                        {{ (product.descriptions_translated.get(lang) or product.description_original or '')[:120] }}...
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <span class="fw-bold fs-5">{{ product.price }} {{ product.currency }}</span>
+                        <span class="badge bg-light text-dark border">{{ product.category }}</span>
+                    </div>
+                    <small class="text-muted"><i class="bi bi-geo-alt"></i> {{ product.producer.country }}</small>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card p-5 text-center text-muted">
+    <i class="bi bi-search fs-1 mb-3"></i>
+    <p>No products found. Try a different search.</p>
+</div>
+{% endif %}
+{% endblock %}

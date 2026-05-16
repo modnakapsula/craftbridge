@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — CraftBridge{% endblock %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>Welcome, {{ current_user.name }} <small class="text-muted fs-6">Producer Dashboard</small></h2>
+    </div>
+    <div class="col-auto">
+        <a href="{{ url_for('producer.product_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Add Product
+        </a>
+        <a href="{{ url_for('producer.products') }}" class="btn btn-outline-secondary ms-2">
+            <i class="bi bi-grid"></i> My Products
+        </a>
+        <a href="{{ url_for('producer.logout') }}" class="btn btn-outline-danger ms-2">Logout</a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card p-3 text-center">
+            <div class="fs-1 fw-bold text-primary">{{ products_count }}</div>
+            <div class="text-muted">Products</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 text-center">
+            <div class="fs-1 fw-bold text-warning">{{ leads | selectattr('status', 'equalto', 'new') | list | length }}</div>
+            <div class="text-muted">New Leads</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 text-center">
+            <div class="fs-1 fw-bold text-success">{{ leads | selectattr('status', 'equalto', 'confirmed') | list | length }}</div>
+            <div class="text-muted">Confirmed Orders</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 text-center">
+            <div class="fs-1 fw-bold text-info">{{ leads | length }}</div>
+            <div class="text-muted">Total Leads</div>
+        </div>
+    </div>
+</div>
+
+<h4>Recent Leads</h4>
+{% if leads %}
+<div class="table-responsive">
+    <table class="table table-hover bg-white rounded">
+        <thead class="table-light">
+            <tr>
+                <th>Product</th>
+                <th>Buyer</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lead in leads %}
+            <tr>
+                <td>{{ lead.product.name }}</td>
+                <td>{{ lead.buyer.name or lead.buyer.email }}</td>
+                <td>
+                    <span class="badge bg-{{ 'info' if lead.status == 'new' else 'warning text-dark' if lead.status == 'contacted' else 'success' if lead.status == 'confirmed' else 'secondary' }}">
+                        {{ lead.status }}
+                    </span>
+                </td>
+                <td>{{ lead.created_at.strftime('%d %b %Y') }}</td>
+                <td>
+                    <a href="{{ url_for('producer.messages', lead_id=lead.id) }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-chat"></i> Message
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="card p-5 text-center text-muted">
+    <i class="bi bi-inbox fs-1 mb-3"></i>
+    <p>No leads yet. Add products to start receiving interest from buyers.</p>
+    <a href="{{ url_for('producer.product_new') }}" class="btn btn-primary">Add Your First Product</a>
+</div>
+{% endif %}
+{% endblock %}

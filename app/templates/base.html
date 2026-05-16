@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CraftBridge{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background-color: #fafafa; }
+        .navbar-brand { font-weight: 700; font-size: 1.5rem; color: #6f42c1 !important; }
+        .btn-primary { background-color: #6f42c1; border-color: #6f42c1; }
+        .btn-primary:hover { background-color: #5a32a3; border-color: #5a32a3; }
+        .card { border: none; box-shadow: 0 2px 8px rgba(0,0,0,.08); border-radius: 12px; }
+        .badge-status-new { background-color: #0dcaf0; }
+        .badge-status-contacted { background-color: #ffc107; color: #000; }
+        .badge-status-confirmed { background-color: #198754; }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('buyer.shop') }}">
+            <i class="bi bi-bag-heart-fill"></i> CraftBridge
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="nav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('buyer.shop') }}">Shop</a></li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        🌍 {{ session.get('language', 'en').upper() }}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" style="max-height:300px;overflow-y:auto;">
+                        <li><a class="dropdown-item" href="{{ url_for('buyer.set_language', lang='en') }}">🇬🇧 English</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('buyer.set_language', lang='de') }}">🇩🇪 Deutsch</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('buyer.set_language', lang='fr') }}">🇫🇷 Français</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('buyer.set_language', lang='es') }}">🇪🇸 Español</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('buyer.set_language', lang='it') }}">🇮🇹 Italiano</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('buyer.set_language', lang='pt') }}">🇧🇷 Português</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('buyer.set_language', lang='ar') }}">🇸🇦 العربية (Arabic)</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('buyer.set_language', lang='ja') }}">🇯🇵 日本語 (Japanese)</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('buyer.set_language', lang='zh') }}">🇹🇼 中文 (Mandarin)</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('buyer.set_language', lang='ko') }}">🇰🇷 한국어 (Korean)</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('buyer.set_language', lang='hi') }}">🇮🇳 हिन्दी (Hindi)</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('buyer.set_language', lang='bn') }}">🇧🇩 বাংলা (Bengali)</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('buyer.set_language', lang='sw') }}">🇰🇪 Swahili</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('buyer.set_language', lang='tr') }}">🇹🇷 Türkçe</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('buyer.set_language', lang='sr') }}">🇷🇸 Srpski</a></li>
+                    </ul>
+                </li>
+                {% if session.get('buyer_id') %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('buyer.my_leads') }}"><i class="bi bi-heart"></i> My Leads</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('buyer.logout') }}">Logout</a></li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('buyer.login') }}">Buyer Login</a></li>
+                {% endif %}
+                <li class="nav-item"><a class="nav-link text-purple fw-bold" href="{{ url_for('producer.dashboard') }}"><i class="bi bi-shop"></i> Producer Portal</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

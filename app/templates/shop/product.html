@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} — CraftBridge{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        {% if product.images %}
+        <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner rounded-3 overflow-hidden">
+                {% for img in product.images %}
+                <div class="carousel-item {{ 'active' if loop.first }}">
+                    <img src="{{ img }}" class="d-block w-100" style="height:400px;object-fit:cover;" alt="{{ product.name }}">
+                </div>
+                {% endfor %}
+            </div>
+            {% if product.images | length > 1 %}
+            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height:400px;">
+            <i class="bi bi-image text-muted" style="font-size:5rem;"></i>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-6 ps-md-5">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('buyer.shop') }}">Shop</a></li>
+                <li class="breadcrumb-item active">{{ product.name }}</li>
+            </ol>
+        </nav>
+
+        <h1 class="mb-2">{{ product.name }}</h1>
+        <p class="text-muted mb-1"><i class="bi bi-geo-alt"></i> {{ product.producer.country }} · {{ product.category }}</p>
+        <h3 class="text-primary mb-3">{{ product.price }} {{ product.currency }}</h3>
+
+        {% if product.sizes_available %}
+        <p><strong>Available sizes:</strong> {{ product.sizes_available }}</p>
+        {% endif %}
+
+        <hr>
+
+        {% if product.marketing_text %}
+        <p class="lead">{{ product.marketing_text }}</p>
+        {% endif %}
+
+        <p>{{ description }}</p>
+
+        {% if product.descriptions_translated %}
+        <p class="text-success small"><i class="bi bi-translate"></i>
+            Available in {{ product.descriptions_translated | length }} languages
+        </p>
+        {% endif %}
+
+        <hr>
+
+        {% if existing_lead %}
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle"></i> You've already expressed interest in this product.
+            <a href="{{ url_for('buyer.my_leads') }}">View your leads</a>
+        </div>
+        {% elif session.get('buyer_id') %}
+        <form method="POST" action="{{ url_for('buyer.create_lead', product_id=product.id) }}">
+            <button type="submit" class="btn btn-primary btn-lg w-100">
+                <i class="bi bi-heart"></i> I'm Interested — Contact Maker
+            </button>
+        </form>
+        {% else %}
+        <a href="{{ url_for('buyer.login') }}" class="btn btn-primary btn-lg w-100">
+            <i class="bi bi-person"></i> Login to Contact Maker
+        </a>
+        <a href="{{ url_for('buyer.register') }}" class="btn btn-outline-primary w-100 mt-2">
+            New here? Create a free account
+        </a>
+        {% endif %}
+
+        <div class="card mt-4 p-3 bg-light">
+            <small class="text-muted">
+                <i class="bi bi-info-circle"></i>
+                Payment is arranged directly between you and the maker after initial contact.
+                CraftBridge connects you — you negotiate details, measurements, and delivery.
+            </small>
+        </div>
+    </div>
+</div>
+{% endblock %}

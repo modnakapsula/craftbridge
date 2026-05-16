@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}My Leads — CraftBridge{% endblock %}
+{% block content %}
+<h2 class="mb-4">My Leads</h2>
+
+{% if leads %}
+<div class="row g-4">
+    {% for lead in leads %}
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h5 class="mb-1">{{ lead.product.name }}</h5>
+                        <p class="text-muted small mb-1">
+                            <i class="bi bi-person-workspace"></i> {{ lead.product.producer.name }}
+                            · {{ lead.product.producer.country }}
+                        </p>
+                        <p class="text-muted small">
+                            <i class="bi bi-calendar"></i> {{ lead.created_at.strftime('%d %b %Y') }}
+                        </p>
+                    </div>
+                    <span class="badge bg-{{ 'info' if lead.status == 'new' else 'warning text-dark' if lead.status == 'contacted' else 'success' if lead.status == 'confirmed' else 'secondary' }}">
+                        {{ lead.status }}
+                    </span>
+                </div>
+                <a href="{{ url_for('buyer.messages', lead_id=lead.id) }}" class="btn btn-sm btn-outline-primary mt-2">
+                    <i class="bi bi-chat"></i> Messages
+                </a>
+                <a href="{{ url_for('buyer.product_detail', product_id=lead.product_id) }}" class="btn btn-sm btn-outline-secondary mt-2">
+                    <i class="bi bi-eye"></i> View Product
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card p-5 text-center text-muted">
+    <i class="bi bi-heart fs-1 mb-3"></i>
+    <p>No leads yet. Browse products and express interest!</p>
+    <a href="{{ url_for('buyer.shop') }}" class="btn btn-primary">Browse Shop</a>
+</div>
+{% endif %}
+{% endblock %}
