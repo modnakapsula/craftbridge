@@ -202,18 +202,25 @@ function renderMarketingResults(results, tone, progressDiv) {
         </div>`;
 
     for (const [lang, text] of entries) {
-        const escaped = text.replace(/"/g, '&quot;');
+        const parts = text.split(/\n\n+/);
+        const headline = parts.length > 1 ? parts[0] : '';
+        const body = parts.length > 1 ? parts.slice(1).join('\n\n') : text;
+        const escapedFull = text.replace(/"/g, '&quot;');
+        const escapedHeadline = headline.replace(/"/g, '&quot;');
+        const escapedBody = body.replace(/"/g, '&quot;');
         html += `<div class="mb-3 pb-3 border-bottom">
-            <div class="d-flex justify-content-between align-items-start gap-2">
-                <div>
-                    <span class="badge bg-secondary mb-1">${lang.toUpperCase()}</span>
-                    <p class="mb-0 small">${text}</p>
-                </div>
-                <button class="btn btn-sm btn-outline-secondary flex-shrink-0" title="Copy"
-                    onclick="navigator.clipboard.writeText(this.dataset.t); this.innerHTML='<i class=\\'bi bi-check-lg\\'></i>'; setTimeout(()=>this.innerHTML='<i class=\\'bi bi-clipboard\\'></i>',1500)"
-                    data-t="${escaped}">
-                    <i class="bi bi-clipboard"></i>
-                </button>
+            <span class="badge bg-secondary mb-2">${lang.toUpperCase()}</span>
+            ${headline ? `<div class="d-flex align-items-start gap-2 mb-1">
+                <strong class="small flex-grow-1">${headline}</strong>
+                <button class="btn btn-sm btn-outline-secondary py-0 flex-shrink-0" title="Copy headline"
+                    onclick="navigator.clipboard.writeText(this.dataset.t); this.innerHTML='✓'; setTimeout(()=>this.innerHTML='<i class=\\'bi bi-clipboard\\'></i>',1500)"
+                    data-t="${escapedHeadline}"><i class="bi bi-clipboard"></i></button>
+            </div>` : ''}
+            <div class="d-flex align-items-start gap-2">
+                <p class="mb-0 small flex-grow-1">${body}</p>
+                <button class="btn btn-sm btn-outline-secondary py-0 flex-shrink-0" title="Copy all"
+                    onclick="navigator.clipboard.writeText(this.dataset.t); this.innerHTML='✓'; setTimeout(()=>this.innerHTML='<i class=\\'bi bi-clipboard\\'></i>',1500)"
+                    data-t="${escapedFull}"><i class="bi bi-clipboard"></i></button>
             </div>
         </div>`;
     }
