@@ -42,6 +42,12 @@
                 <a href="{{ url_for('producer.product_edit', product_id=product.id) }}" class="btn btn-sm btn-outline-secondary mb-2 w-100">
                     <i class="bi bi-pencil"></i> Edit & Retranslate
                 </a>
+                <form method="POST" action="{{ url_for('producer.product_delete', product_id=product.id) }}"
+                      onsubmit="return confirm('Delete this product and all its photos?')">
+                    <button type="submit" class="btn btn-sm btn-danger w-100 mb-2">
+                        <i class="bi bi-trash"></i> Delete Product
+                    </button>
+                </form>
                 <form method="POST" action="{{ url_for('producer.product_upload', product_id=product.id) }}"
                       enctype="multipart/form-data" class="d-flex gap-2 align-items-center">
                     <input type="file" name="photos" class="form-control form-control-sm" multiple accept="image/*">
