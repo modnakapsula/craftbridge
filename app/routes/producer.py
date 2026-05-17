@@ -140,19 +140,7 @@ def product_new():
                 product.images = images
                 db.session.commit()
 
-        if description and target_countries:
-            try:
-                translations = gemma.translate(description, target_countries, current_user.language)
-                product.descriptions_translated = translations
-                name_translations = gemma.translate(name, target_countries, current_user.language)
-                product.names_translated = name_translations
-                product.marketing_text = gemma.generate_marketing_text(description, current_user.language)
-                db.session.commit()
-                flash("Product created and automatically translated by Gemma!", "success")
-            except Exception as e:
-                flash(f"Product created, but Gemma translation failed: {e}", "warning")
-        else:
-            flash("Product created.", "success")
+        flash("Product saved.", "success")
 
         return redirect(url_for("producer.products"))
 
@@ -173,21 +161,8 @@ def product_edit(product_id):
         target_countries = request.form.getlist("target_countries")
         product.target_countries = target_countries
 
-        if product.description_original and target_countries:
-            try:
-                translations = gemma.translate(product.description_original, target_countries, current_user.language)
-                product.descriptions_translated = translations
-                name_translations = gemma.translate(product.name, target_countries, current_user.language)
-                product.names_translated = name_translations
-                product.marketing_text = gemma.generate_marketing_text(product.description_original, current_user.language)
-                db.session.commit()
-                flash("Product updated and translated by Gemma!", "success")
-            except Exception as e:
-                db.session.commit()
-                flash(f"Saved, but Gemma translation failed: {e}", "warning")
-        else:
-            db.session.commit()
-            flash("Product updated.", "success")
+        db.session.commit()
+        flash("Product saved.", "success")
 
         files = request.files.getlist("photos")
         if files and files[0].filename:
