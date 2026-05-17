@@ -4,7 +4,7 @@
 
 ## The Problem
 
-We are surrounded by extraordinary people. Architects. Engineers. Designers. People who built careers on precision, expertise, and craft — and then the world changed.
+We are surrounded by extraordinary people. Architects. Engineers. Designers. People who spent decades building careers and deepening skills they loved — and then the world changed. As economies shift and automation accelerates, many of them have been laid off or find themselves unable to return to the work they built their lives around.
 
 A close relative of mine is an architect working as a freelancer in Macedonia. She turned to something she had always loved: Tiffany stained glass — and named her atelier ArtIdea. Each lamp she makes contains 334 hand-cut pieces of glass, assembled and soldered by hand. Each piece is unique. The kind of work that sells for €200 in Amsterdam or Paris.
 
