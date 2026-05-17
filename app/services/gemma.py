@@ -42,7 +42,6 @@ def _call_google(prompt: str) -> str:
                 model=model,
                 contents=prompt,
                 config=types.GenerateContentConfig(
-                    thinking_config=types.ThinkingConfig(thinking_budget=512),
                     max_output_tokens=1024,
                 )
             )
