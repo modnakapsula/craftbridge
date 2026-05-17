@@ -162,22 +162,8 @@ def product_edit(product_id):
         target_countries = request.form.getlist("target_countries")
         product.target_countries = target_countries
 
-        if request.form.get("do_translate") == "1" and product.description_original and target_countries:
-            desc_translations = {}
-            name_translations = {}
-            for lang in target_countries:
-                try:
-                    desc_translations[lang] = gemma.translate_one(product.description_original, lang, current_user.language)
-                    name_translations[lang] = gemma.translate_one(product.name, lang, current_user.language)
-                except Exception:
-                    pass
-            product.descriptions_translated = desc_translations
-            product.names_translated = name_translations
-            db.session.commit()
-            flash(f"Product saved and translated to {len(desc_translations)} languages!", "success")
-        else:
-            db.session.commit()
-            flash("Product saved.", "success")
+        db.session.commit()
+        flash("Product saved.", "success")
 
         files = request.files.getlist("photos")
         if files and files[0].filename:
