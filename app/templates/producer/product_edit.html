@@ -266,11 +266,16 @@ document.getElementById('btnCasual').addEventListener('click', () => generateMar
 document.getElementById('btnTeen').addEventListener('click', () => generateMarketing('teen'));
 
 // Loading state on save
+let clickedBtn = null;
+document.getElementById('saveBtn').addEventListener('click', function() { clickedBtn = this; });
+document.getElementById('translateBtn').addEventListener('click', function() { clickedBtn = this; });
 document.querySelector('form').addEventListener('submit', function() {
-    const btn = document.getElementById('saveBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Saving...';
-    document.getElementById('savingMsg').classList.remove('d-none');
+    if (clickedBtn) {
+        clickedBtn.disabled = true;
+        const isTranslate = clickedBtn.id === 'translateBtn';
+        clickedBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>' + (isTranslate ? 'Translating...' : 'Saving...');
+        if (isTranslate) document.getElementById('savingMsg').classList.remove('d-none');
+    }
 });
 
 // Dynamic sizes placeholder based on category
