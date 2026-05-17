@@ -2,6 +2,7 @@ from flask import Flask, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from dotenv import load_dotenv
+from sqlalchemy import text
 import os
 
 load_dotenv()
@@ -48,5 +49,10 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+        try:
+            db.session.execute(text("ALTER TABLE products ADD COLUMN IF NOT EXISTS names_translated TEXT DEFAULT '{}'"))
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
     return app
