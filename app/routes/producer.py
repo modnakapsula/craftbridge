@@ -189,6 +189,20 @@ def product_edit(product_id):
             db.session.commit()
             flash("Product updated.", "success")
 
+        files = request.files.getlist("photos")
+        if files and files[0].filename:
+            primary_index = int(request.form.get("primary_photo", 0))
+            images = []
+            for file in files:
+                if file and allowed_file(file.filename):
+                    url = _upload_to_cloudinary(file, product_id, len(images))
+                    images.append(url)
+            if images and primary_index < len(images):
+                images.insert(0, images.pop(primary_index))
+            if images:
+                product.images = images
+                db.session.commit()
+
         return redirect(url_for("producer.products"))
 
     return render_template("producer/product_edit.html", product=product)

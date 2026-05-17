@@ -5,7 +5,7 @@
     <div class="col-lg-8">
         <div class="card p-4">
             <h3 class="mb-4"><i class="bi bi-pencil"></i> Edit Product</h3>
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Product Name</label>
                     <input type="text" name="name" class="form-control" required value="{{ product.name }}">
@@ -99,6 +99,22 @@
                     </div>
                 </div>
 
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Photos</label>
+                    {% if product.images %}
+                    <div class="d-flex flex-wrap gap-2 mb-2">
+                        {% for img in product.images %}
+                        <img src="{{ img }}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;{% if loop.first %}border:3px solid #6f42c1;{% endif %}" alt="photo">
+                        {% endfor %}
+                    </div>
+                    <small class="text-muted d-block mb-2">Current photos above. Upload new ones to replace them.</small>
+                    {% endif %}
+                    <input type="file" name="photos" id="photosInput" class="form-control" multiple accept="image/*">
+                    <small class="text-muted">Select multiple photos at once. Click a photo to set it as primary.</small>
+                    <input type="hidden" name="primary_photo" id="primaryPhotoInput" value="0">
+                    <div id="photoPreview" class="d-flex flex-wrap gap-2 mt-2"></div>
+                </div>
+
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary" id="saveBtn">
                         <i class="bi bi-magic"></i> Save & Retranslate with Gemma
@@ -120,6 +136,43 @@
 
 {% block scripts %}
 <script>
+// Photo preview and primary selection
+document.getElementById('photosInput').addEventListener('change', function() {
+    const preview = document.getElementById('photoPreview');
+    const primaryInput = document.getElementById('primaryPhotoInput');
+    preview.innerHTML = '';
+    Array.from(this.files).forEach(function(file, index) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const wrapper = document.createElement('div');
+            wrapper.style.cssText = 'position:relative;cursor:pointer;';
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.cssText = 'width:100px;height:100px;object-fit:cover;border-radius:8px;border:3px solid transparent;';
+            if (index === 0) {
+                img.style.borderColor = '#6f42c1';
+                const badge = document.createElement('span');
+                badge.textContent = 'Primary';
+                badge.style.cssText = 'position:absolute;bottom:4px;left:4px;background:#6f42c1;color:white;font-size:10px;padding:1px 5px;border-radius:4px;';
+                wrapper.appendChild(badge);
+            }
+            img.addEventListener('click', function() {
+                document.querySelectorAll('#photoPreview img').forEach(i => i.style.borderColor = 'transparent');
+                document.querySelectorAll('#photoPreview span').forEach(s => s.remove());
+                img.style.borderColor = '#6f42c1';
+                primaryInput.value = index;
+                const badge = document.createElement('span');
+                badge.textContent = 'Primary';
+                badge.style.cssText = 'position:absolute;bottom:4px;left:4px;background:#6f42c1;color:white;font-size:10px;padding:1px 5px;border-radius:4px;';
+                wrapper.appendChild(badge);
+            });
+            wrapper.appendChild(img);
+            preview.appendChild(wrapper);
+        };
+        reader.readAsDataURL(file);
+    });
+});
+
 // Marketing generation buttons
 function getCheckedLanguages() {
     return [...document.querySelectorAll('input[name="target_countries"]:checked')].map(cb => cb.value);
