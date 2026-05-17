@@ -6,6 +6,23 @@ from app import db
 from app.models import Producer, Product, Lead, Message
 from app.services import gemma
 import os
+import cloudinary
+import cloudinary.uploader
+
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+)
+
+def _upload_to_cloudinary(file, product_id, index):
+    result = cloudinary.uploader.upload(
+        file,
+        folder=f"craftbridge/{product_id}",
+        public_id=f"photo_{index}",
+        overwrite=True,
+    )
+    return result["secure_url"]
 
 producer_bp = Blueprint("producer", __name__)
 
@@ -111,15 +128,12 @@ def product_new():
 
         files = request.files.getlist("photos")
         if files and files[0].filename:
-            upload_folder = os.path.join(current_app.root_path, "static", "uploads", str(current_user.id))
-            os.makedirs(upload_folder, exist_ok=True)
             primary_index = int(request.form.get("primary_photo", 0))
             images = []
             for file in files:
                 if file and allowed_file(file.filename):
-                    filename = secure_filename(f"{product.id}_{len(images)}_{file.filename}")
-                    file.save(os.path.join(upload_folder, filename))
-                    images.append(f"/static/uploads/{current_user.id}/{filename}")
+                    url = _upload_to_cloudinary(file, product.id, len(images))
+                    images.append(url)
             if images and primary_index < len(images):
                 images.insert(0, images.pop(primary_index))
             if images:
@@ -192,9 +206,8 @@ def product_upload(product_id):
     images = product.images
     for file in files:
         if file and allowed_file(file.filename):
-            filename = secure_filename(f"{product_id}_{len(images)}_{file.filename}")
-            file.save(os.path.join(upload_folder, filename))
-            images.append(f"/static/uploads/{current_user.id}/{filename}")
+            url = _upload_to_cloudinary(file, product_id, len(images))
+            images.append(url)
 
     product.images = images
     db.session.commit()
