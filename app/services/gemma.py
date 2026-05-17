@@ -124,13 +124,29 @@ def _generate_marketing_source(description: str, tone: str, source_language: str
         "teen":    "casual Gen Z/teen energy — cool, authentic, share-worthy. Include 1-2 relevant emojis.",
     }
     tone_desc = tone_descs.get(tone, tone_descs["casual"])
-    prompt = f"""Write 2-3 sentences of marketing text for this handmade artisan product.
+    prompt = f"""Write marketing copy for this handmade artisan product.
 Tone: {tone_desc}
 Language: {source_language}
 Product: {description}
 
-Output the marketing text only, nothing else:"""
+Output exactly two parts, nothing else:
+1. A short catchy headline (one line)
+2. 2-3 sentences of marketing body text
+
+Format:
+HEADLINE: <headline here>
+BODY: <body text here>"""
     result = _call(prompt)
+    headline = ""
+    body = ""
+    for line in result.strip().split('\n'):
+        l = line.strip()
+        if l.upper().startswith("HEADLINE:"):
+            headline = l.split(":", 1)[-1].strip()
+        elif l.upper().startswith("BODY:"):
+            body = l.split(":", 1)[-1].strip()
+    if headline and body:
+        return f"{headline}\n\n{body}"
     lines = [l.strip() for l in result.strip().split('\n') if l.strip()]
     clean = [l for l in lines if not l.startswith(('*', '#', '-', '1.', '2.', '3.'))]
     return ' '.join(clean[-3:]) if clean else result
