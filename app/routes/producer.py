@@ -130,6 +130,8 @@ def product_new():
             try:
                 translations = gemma.translate(description, target_countries, current_user.language)
                 product.descriptions_translated = translations
+                name_translations = gemma.translate(name, target_countries, current_user.language)
+                product.names_translated = name_translations
                 product.marketing_text = gemma.generate_marketing_text(description, current_user.language)
                 db.session.commit()
                 flash("Product created and automatically translated by Gemma!", "success")
@@ -161,6 +163,8 @@ def product_edit(product_id):
             try:
                 translations = gemma.translate(product.description_original, target_countries, current_user.language)
                 product.descriptions_translated = translations
+                name_translations = gemma.translate(product.name, target_countries, current_user.language)
+                product.names_translated = name_translations
                 product.marketing_text = gemma.generate_marketing_text(product.description_original, current_user.language)
                 db.session.commit()
                 flash("Product updated and translated by Gemma!", "success")

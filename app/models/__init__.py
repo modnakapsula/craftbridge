@@ -34,6 +34,7 @@ class Product(db.Model):
     description_original = db.Column(db.Text)
     description_language = db.Column(db.String(10), default="en")
     _descriptions_translated = db.Column("descriptions_translated", db.Text, default="{}")
+    _names_translated = db.Column("names_translated", db.Text, default="{}")
     marketing_text = db.Column(db.Text)
     price = db.Column(db.Float)
     currency = db.Column(db.String(10), default="EUR")
@@ -54,6 +55,14 @@ class Product(db.Model):
     @descriptions_translated.setter
     def descriptions_translated(self, value):
         self._descriptions_translated = json.dumps(value, ensure_ascii=False)
+
+    @property
+    def names_translated(self):
+        return json.loads(self._names_translated or "{}")
+
+    @names_translated.setter
+    def names_translated(self, value):
+        self._names_translated = json.dumps(value, ensure_ascii=False)
 
     @property
     def target_countries(self):

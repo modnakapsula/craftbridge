@@ -44,7 +44,7 @@
                 </div>
                 {% endif %}
                 <div class="card-body">
-                    <h5 class="card-title">{{ product.name }}</h5>
+                    <h5 class="card-title">{{ product.names_translated.get(lang) or product.name }}</h5>
                     <p class="card-text text-muted small">
                         {{ (product.descriptions_translated.get(lang) or product.description_original or '')[:120] }}...
                     </p>
