@@ -52,6 +52,15 @@ def _call_ollama(prompt: str) -> str:
         return json.loads(resp.read())["response"].strip()
 
 
+def translate_one(text: str, lang: str, source_language: str = "en") -> str:
+    prompt = f"Translate this text to {lang}. Return only the translation, nothing else:\n{text}"
+    try:
+        raw = _call(prompt).strip()
+        return _extract_last_line(raw)
+    except Exception:
+        return text
+
+
 def translate(text: str, target_languages: list[str], source_language: str = "en") -> dict:
     langs = ", ".join(target_languages)
     prompt = f"""Translate this product description into the following languages: {langs}.

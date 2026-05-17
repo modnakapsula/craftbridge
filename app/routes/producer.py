@@ -141,15 +141,18 @@ def product_new():
                 db.session.commit()
 
         if request.form.get("do_translate") == "1" and description and target_countries:
-            try:
-                translations = gemma.translate(description, target_countries, current_user.language)
-                product.descriptions_translated = translations
-                name_translations = gemma.translate(name, target_countries, current_user.language)
-                product.names_translated = name_translations
-                db.session.commit()
-                flash("Product saved and translated!", "success")
-            except Exception as e:
-                flash(f"Saved, but translation failed: {e}", "warning")
+            desc_translations = {}
+            name_translations = {}
+            for lang in target_countries:
+                try:
+                    desc_translations[lang] = gemma.translate_one(description, lang, current_user.language)
+                    name_translations[lang] = gemma.translate_one(name, lang, current_user.language)
+                except Exception:
+                    pass
+            product.descriptions_translated = desc_translations
+            product.names_translated = name_translations
+            db.session.commit()
+            flash(f"Product saved and translated to {len(desc_translations)} languages!", "success")
         else:
             flash("Product saved.", "success")
 
@@ -173,16 +176,18 @@ def product_edit(product_id):
         product.target_countries = target_countries
 
         if request.form.get("do_translate") == "1" and product.description_original and target_countries:
-            try:
-                translations = gemma.translate(product.description_original, target_countries, current_user.language)
-                product.descriptions_translated = translations
-                name_translations = gemma.translate(product.name, target_countries, current_user.language)
-                product.names_translated = name_translations
-                db.session.commit()
-                flash("Product saved and translated!", "success")
-            except Exception as e:
-                db.session.commit()
-                flash(f"Saved, but translation failed: {e}", "warning")
+            desc_translations = {}
+            name_translations = {}
+            for lang in target_countries:
+                try:
+                    desc_translations[lang] = gemma.translate_one(product.description_original, lang, current_user.language)
+                    name_translations[lang] = gemma.translate_one(product.name, lang, current_user.language)
+                except Exception:
+                    pass
+            product.descriptions_translated = desc_translations
+            product.names_translated = name_translations
+            db.session.commit()
+            flash(f"Product saved and translated to {len(desc_translations)} languages!", "success")
         else:
             db.session.commit()
             flash("Product saved.", "success")
