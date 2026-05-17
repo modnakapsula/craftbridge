@@ -109,6 +109,20 @@ def product_new():
         db.session.add(product)
         db.session.commit()
 
+        files = request.files.getlist("photos")
+        if files and files[0].filename:
+            upload_folder = os.path.join(current_app.root_path, "static", "uploads", str(current_user.id))
+            os.makedirs(upload_folder, exist_ok=True)
+            images = []
+            for file in files:
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(f"{product.id}_{len(images)}_{file.filename}")
+                    file.save(os.path.join(upload_folder, filename))
+                    images.append(f"/static/uploads/{current_user.id}/{filename}")
+            if images:
+                product.images = images
+                db.session.commit()
+
         if description and target_countries:
             try:
                 translations = gemma.translate(description, target_countries, current_user.language)
