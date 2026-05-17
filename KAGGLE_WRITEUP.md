@@ -6,11 +6,11 @@
 
 We are surrounded by extraordinary people. Architects. Engineers. Designers. People who spent decades building careers and deepening skills they loved — and then the world changed. As economies shift and automation accelerates, many of them have been laid off or find themselves unable to return to the work they built their lives around.
 
-A close relative of mine is an architect working as a freelancer in Macedonia. She turned to something she had always loved: Tiffany stained glass — and named her atelier ArtIdea. Each lamp she makes contains 334 hand-cut pieces of glass, assembled and soldered by hand. Each piece is unique. The kind of work that sells for €200 in Amsterdam or Paris.
+A close relative of mine is an architect working as a freelancer in Macedonia. She turned to something she had always loved: Tiffany stained glass — and named her atelier ArtIdea. Some of her lamps contain over 300 hand-cut pieces of glass, assembled and soldered by hand. She also paints on glass with specialized glass paints, creating pieces that are entirely one of a kind. The kind of work that sells for €300 in Amsterdam or Paris.
 
-She speaks English — but like most artists and engineers, marketing is not her strength. Writing compelling product copy is hard enough in your own language. Translating it into German, French, or Japanese? That's not a skill they teach in architecture school.
+She speaks English and Macedonian — but like most artists and engineers, marketing is not her strength. Writing compelling product copy is hard enough in your own language. Translating it into German, French, or Japanese? That's not a skill they teach in architecture school.
 
-This is not an unusual story. There are over 300 million artisan makers worldwide — in Serbia, Morocco, India, Kenya — creating handmade goods of exceptional quality. Most of them will never reach a global buyer. Not because their products aren't good enough, but because of a single barrier: language.
+This is not an unusual story. There are millions of makers worldwide — in the US, Canada, Australia, Spain, Italy, France, Morocco, India, Kenya — not just artists, but tailors, woodworkers, potters, jewelers, weavers, candle makers, seamstresses, and anyone who creates something with their hands, often from their own home. Many of them are extraordinarily skilled at what they make, but find the digital world overwhelming or simply not their strength. Setting up an online shop, writing product descriptions, translating to other languages — for them, that effort can feel bigger than the craft itself. Some are displaced professionals who turned to craft out of necessity. Others have always made things as a hobby and are now discovering they could turn that passion into income. Most of them will never reach a global buyer. Not because their products aren't good enough, but because of a single barrier: language.
 
 Platforms like Etsy partially address this, but they still require producers to write their own descriptions in English and handle all marketing themselves. For non-English speakers in developing economies, the barrier remains.
 
@@ -56,11 +56,14 @@ This removes the final barrier: the producer doesn't need to write marketing cop
 ```
 Producer (voice/text)
        ↓
+Web Speech API (browser, native language auto-detected)
+       ↓
 Flask Backend (Python)
        ↓
 Gemma 4 API (google-genai SDK)
   ├── Translation: per-language AJAX calls → saved incrementally
   ├── Marketing: 1 generation call per tone → translated separately
+  ├── Voice cleanup: transcription polished before use
   └── Fallback: gemma-4-31b-it if primary model errors
        ↓
 PostgreSQL (Railway production)
