@@ -16,10 +16,7 @@ _LANG_NAMES = {
 def _get_client():
     global _client
     if _client is None:
-        _client = genai.Client(
-            api_key=os.getenv("GEMMA_API_KEY"),
-            http_options=types.HttpOptions(timeout=30000),
-        )
+        _client = genai.Client(api_key=os.getenv("GEMMA_API_KEY"))
     return _client
 
 
