@@ -202,6 +202,21 @@ def product_upload(product_id):
     return redirect(url_for("producer.products"))
 
 
+@producer_bp.route("/products/<int:product_id>/delete", methods=["POST"])
+@login_required
+def product_delete(product_id):
+    product = Product.query.filter_by(id=product_id, producer_id=current_user.id).first_or_404()
+    upload_folder = os.path.join(current_app.root_path, "static", "uploads", str(current_user.id))
+    for img_path in (product.images or []):
+        full_path = os.path.join(current_app.root_path, img_path.lstrip("/"))
+        if os.path.exists(full_path):
+            os.remove(full_path)
+    db.session.delete(product)
+    db.session.commit()
+    flash("Product deleted.", "success")
+    return redirect(url_for("producer.products"))
+
+
 @producer_bp.route("/generate-marketing", methods=["POST"])
 @login_required
 def generate_marketing():
