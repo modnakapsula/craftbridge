@@ -253,6 +253,36 @@ def generate_marketing():
         return jsonify({"error": str(e)}), 500
 
 
+@producer_bp.route("/generate-marketing-source", methods=["POST"])
+@login_required
+def generate_marketing_source():
+    data = request.get_json()
+    description = (data.get("description") or "").strip()
+    tone = data.get("tone", "elegant")
+    if not description:
+        return jsonify({"error": "No description provided"}), 400
+    try:
+        source_text = gemma._generate_marketing_source(description, tone, current_user.language)
+        return jsonify({"source_text": source_text, "language": current_user.language})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@producer_bp.route("/translate-marketing-one", methods=["POST"])
+@login_required
+def translate_marketing_one():
+    data = request.get_json()
+    text = data.get("text", "")
+    lang = data.get("lang", "en")
+    if not text or not lang:
+        return jsonify({"error": "missing fields"}), 400
+    try:
+        translated = gemma.translate_one(text, lang, current_user.language)
+        return jsonify({"lang": lang, "text": translated})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @producer_bp.route("/messages/<int:lead_id>", methods=["GET", "POST"])
 @login_required
 def messages(lead_id):

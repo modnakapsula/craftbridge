@@ -180,7 +180,7 @@ function getCheckedLanguages() {
     return [...document.querySelectorAll('input[name="target_countries"]:checked')].map(cb => cb.value);
 }
 
-function renderMarketingResults(data, tone) {
+function renderMarketingResults(results, tone, progressDiv) {
     const panel = document.getElementById('marketingResult');
     const toneConfig = {
         elegant: {label: 'Elegant Marketing', badge: 'bg-primary', icon: 'suit-heart'},
@@ -188,7 +188,7 @@ function renderMarketingResults(data, tone) {
         teen:    {label: 'Teen Marketing',     badge: 'bg-warning text-dark', icon: 'lightning-fill'},
     };
     const cfg = toneConfig[tone] || toneConfig.casual;
-    const entries = Object.entries(data.results);
+    const entries = Object.entries(results);
 
     let html = `<div class="card border-0 shadow-sm p-3">
         <div class="d-flex align-items-center justify-content-between mb-3">
@@ -214,45 +214,72 @@ function renderMarketingResults(data, tone) {
     }
     html += '</div>';
     panel.innerHTML = html;
+    if (progressDiv) panel.appendChild(progressDiv);
     panel.classList.remove('d-none');
 }
 
 async function generateMarketing(tone) {
     const description = document.getElementById('description').value.trim();
-    if (!description) {
-        alert('Please enter a product description first.');
-        return;
-    }
+    if (!description) { alert('Please enter a product description first.'); return; }
     const languages = getCheckedLanguages();
-    const langCount = languages.length || 1;
-    const estSec = Math.round(langCount * 10 + 15);
-    const btn = document.getElementById(tone === 'elegant' ? 'btnElegant' : 'btnTeen');
+    const btnId = tone === 'elegant' ? 'btnElegant' : tone === 'casual' ? 'btnCasual' : 'btnTeen';
+    const btn = document.getElementById(btnId);
     const orig = btn.innerHTML;
     btn.disabled = true;
-    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>Generating (~${estSec}s)...`;
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 120000);
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Generating...';
+    const panel = document.getElementById('marketingResult');
+    panel.innerHTML = '';
+    panel.classList.remove('d-none');
 
     try {
-        const resp = await fetch('/producer/generate-marketing', {
+        const sourceResp = await fetch('/producer/generate-marketing-source', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({description, languages, tone}),
-            signal: controller.signal
+            body: JSON.stringify({description, tone})
         });
-        clearTimeout(timeout);
-        const data = await resp.json();
-        if (data.error) { alert('Error: ' + data.error); return; }
-        renderMarketingResults(data, tone);
-    } catch(e) {
-        clearTimeout(timeout);
-        if (e.name === 'AbortError') {
-            alert('Gemma took too long. Try selecting fewer languages and retry.');
-        } else {
-            alert('Request failed: ' + e.message);
+        const sourceData = await sourceResp.json();
+        if (sourceData.error) { alert('Error: ' + sourceData.error); return; }
+        const sourceText = sourceData.source_text;
+        const sourceLang = sourceData.language;
+        const results = {[sourceLang]: sourceText};
+        renderMarketingResults(results, tone);
+        btn.disabled = false;
+        btn.innerHTML = orig;
+
+        const otherLangs = languages.filter(l => l !== sourceLang);
+        if (otherLangs.length === 0) return;
+        const progressDiv = document.createElement('div');
+        progressDiv.className = 'd-flex flex-wrap gap-1 mt-2';
+        panel.appendChild(progressDiv);
+
+        for (const lang of otherLangs) {
+            const badge = document.createElement('span');
+            badge.className = 'badge bg-secondary';
+            badge.textContent = '⏳ ' + lang.toUpperCase();
+            progressDiv.appendChild(badge);
+            try {
+                const resp = await fetch('/producer/translate-marketing-one', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({text: sourceText, lang, tone})
+                });
+                const data = await resp.json();
+                if (data.text) {
+                    results[lang] = data.text;
+                    badge.className = 'badge bg-success';
+                    badge.textContent = '✓ ' + lang.toUpperCase();
+                    renderMarketingResults(results, tone, progressDiv);
+                } else {
+                    badge.className = 'badge bg-danger';
+                    badge.textContent = '✗ ' + lang.toUpperCase();
+                }
+            } catch(e) {
+                badge.className = 'badge bg-danger';
+                badge.textContent = '✗ ' + lang.toUpperCase();
+            }
         }
-    } finally {
+    } catch(e) {
+        alert('Request failed: ' + e.message);
         btn.disabled = false;
         btn.innerHTML = orig;
     }
