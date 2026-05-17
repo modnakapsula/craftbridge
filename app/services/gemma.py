@@ -1,8 +1,16 @@
 import os
 import json
 from google import genai
+from google.genai import types
 
 _client = None
+
+_LANG_NAMES = {
+    'en': 'English', 'de': 'German', 'fr': 'French', 'es': 'Spanish',
+    'it': 'Italian', 'pt': 'Portuguese', 'ar': 'Arabic', 'ja': 'Japanese',
+    'zh': 'Mandarin Chinese', 'ko': 'Korean', 'hi': 'Hindi', 'bn': 'Bengali',
+    'sw': 'Swahili', 'tr': 'Turkish', 'sr': 'Serbian', 'mk': 'Macedonian',
+}
 
 
 def _get_client():
@@ -27,7 +35,14 @@ def _call_google(prompt: str) -> str:
     fallbacks = [m for m in _MODELS if m != primary]
     for model in [primary] + fallbacks:
         try:
-            response = client.models.generate_content(model=model, contents=prompt)
+            response = client.models.generate_content(
+                model=model,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    thinking_config=types.ThinkingConfig(thinking_budget=512),
+                    max_output_tokens=1024,
+                )
+            )
             return response.text.strip()
         except Exception as e:
             if "500" in str(e) or "INTERNAL" in str(e):
@@ -53,7 +68,8 @@ def _call_ollama(prompt: str) -> str:
 
 
 def translate_one(text: str, lang: str, source_language: str = "en") -> str:
-    prompt = f"Translate this text to {lang}. Return only the translation, nothing else:\n{text}"
+    lang_name = _LANG_NAMES.get(lang, lang)
+    prompt = f"Translate this text to {lang_name}. Return only the translation, nothing else:\n{text}"
     try:
         raw = _call(prompt).strip()
         return _extract_last_line(raw)
