@@ -86,7 +86,7 @@
                 <div class="mb-4">
                     <label class="form-label fw-bold">Target Markets — select to retranslate</label>
                     <div class="row">
-                        {% for code, name in [('en','English'), ('de','German'), ('fr','French'), ('es','Spanish'), ('it','Italian'), ('pt','Portuguese'), ('ar','Arabic'), ('ja','Japanese'), ('zh','Mandarin'), ('ko','Korean'), ('hi','Hindi'), ('bn','Bengali'), ('sw','Swahili'), ('tr','Turkish'), ('sr','Serbian')] %}
+                        {% for code, name in [('en','English'), ('de','German'), ('fr','French'), ('es','Spanish'), ('it','Italian'), ('pt','Portuguese'), ('ar','Arabic'), ('ja','Japanese'), ('zh','Mandarin'), ('ko','Korean'), ('hi','Hindi'), ('bn','Bengali'), ('sw','Swahili'), ('tr','Turkish'), ('sr','Serbian'), ('mk','Macedonian')] %}
                         <div class="col-md-3 col-6">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="target_countries"
@@ -245,7 +245,7 @@ const langMap = {
     'sr': 'sr-RS', 'de': 'de-DE', 'fr': 'fr-FR', 'es': 'es-ES',
     'it': 'it-IT', 'pt': 'pt-PT', 'ar': 'ar-SA', 'ja': 'ja-JP',
     'zh': 'zh-CN', 'ko': 'ko-KR', 'hi': 'hi-IN', 'bn': 'bn-BD',
-    'sw': 'sw-KE', 'tr': 'tr-TR', 'en': 'en-US'
+    'sw': 'sw-KE', 'tr': 'tr-TR', 'en': 'en-US', 'mk': 'mk-MK'
 };
 
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {

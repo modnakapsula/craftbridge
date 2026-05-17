@@ -28,6 +28,7 @@ LANGUAGES = {
     "sw": "Swahili",
     "tr": "Türkçe",
     "sr": "Srpski",
+    "mk": "Македонски",
 }
 
 CATEGORIES = ["Clothing", "Knitwear", "Accessories", "Home Decor", "Jewelry", "Other"]
