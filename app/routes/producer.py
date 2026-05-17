@@ -113,12 +113,15 @@ def product_new():
         if files and files[0].filename:
             upload_folder = os.path.join(current_app.root_path, "static", "uploads", str(current_user.id))
             os.makedirs(upload_folder, exist_ok=True)
+            primary_index = int(request.form.get("primary_photo", 0))
             images = []
             for file in files:
                 if file and allowed_file(file.filename):
                     filename = secure_filename(f"{product.id}_{len(images)}_{file.filename}")
                     file.save(os.path.join(upload_folder, filename))
                     images.append(f"/static/uploads/{current_user.id}/{filename}")
+            if images and primary_index < len(images):
+                images.insert(0, images.pop(primary_index))
             if images:
                 product.images = images
                 db.session.commit()
