@@ -38,7 +38,7 @@
 
         <h1 class="mb-2">{{ product.name }}</h1>
         <p class="text-muted mb-1"><i class="bi bi-geo-alt"></i> {{ product.producer.country }} · {{ product.category }}</p>
-        <h3 class="text-primary mb-3">{{ product.price }} {{ product.currency }}</h3>
+        <h3 class="text-primary mb-3">{% if product.price %}{{ product.price }} {{ product.currency }}{% else %}<span class="text-muted fs-5">Contact for price</span>{% endif %}</h3>
 
         {% if product.sizes_available %}
         <p><strong>Available sizes:</strong> {{ product.sizes_available }}</p>
