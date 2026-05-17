@@ -34,18 +34,22 @@ Translation is done language by language via AJAX calls — each language is a s
 Both the product **description** and **name** are translated, enabling fully localized listings in the buyer shop.
 
 ### 2. Three-Tone Marketing Generation
-This is where CraftBridge goes beyond simple translation. Producers can generate marketing copy in three distinct tones with one click:
+This is where CraftBridge goes beyond simple translation. Many artisans and makers struggle to write compelling marketing copy — even in their own language. An architect who creates stunning Tiffany lamps may have no idea how to describe them for Instagram or a premium retail pitch.
 
-- **Elegant** — Formal, warm prose that highlights craftsmanship and the sensory experience of owning the piece. Designed for premium positioning.
-- **Casual** — Friendly, conversational copy that feels like a genuine recommendation. Ideal for email or blog use.
+Producers can generate a complete marketing post — with headline and body text — in three distinct tones with one click:
+
+- **Elegant** — Formal, warm prose that highlights craftsmanship and the sensory experience of owning the piece. Designed for premium positioning and retail pitches.
+- **Casual** — Friendly, conversational copy that feels like a genuine recommendation. Ideal for email newsletters and blog posts.
 - **Teen/Gen Z** — Energetic, youth-oriented copy with authentic slang and emojis. Built for Instagram, TikTok, and Snapchat.
 
-Each tone is generated in all selected target languages simultaneously, preserving voice and register across linguistic boundaries. A Serbian artisan gets marketing copy ready to paste into Instagram in German, French, and Serbian — in one click.
+Each tone is generated in all selected target languages simultaneously. Every language block has a one-click **Copy** button — the producer copies the text directly to their clipboard and pastes it into Instagram, Etsy, or an email campaign. No editing required.
+
+A maker who struggled to write even a single product description in her own language now has three professionally written marketing posts — in 10 languages — ready to publish in minutes.
 
 ### 3. Voice-to-Description
-Producers can describe their product by speaking — in their own language. The Web Speech API captures audio and transcribes it in the producer's native language (auto-detected from their profile: sr-RS, de-DE, mk-MK, ar-SA, etc.). Gemma 4 then works with this natural-language input as the source for translation and marketing generation.
+Producers can describe their product by speaking — in their own language, in their own words. They can talk about the materials, the technique, the inspiration behind the piece, or anything they want buyers to know. The Web Speech API captures audio and transcribes it in the producer's native language (auto-detected from their profile: sr-RS, de-DE, mk-MK, ar-SA, etc.). Gemma 4 then uses this natural, personal input as the source for translation and marketing generation.
 
-This removes the final barrier: the producer doesn't need to type in a foreign language, or even type at all.
+This removes the final barrier: the producer doesn't need to write marketing copy, type in a foreign language, or even know what "product description" means. They just talk — the way they would explain their work to a friend.
 
 ## Technical Architecture
 
