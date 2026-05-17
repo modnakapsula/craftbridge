@@ -3,7 +3,25 @@
 {% block content %}
 <div class="row mb-4 align-items-center">
     <div class="col">
-        <h2>Unique Pieces from Makers Worldwide</h2>
+        {% set shop_headline = {
+            'en': 'Unique Pieces from Makers',
+            'de': 'Einzigartige Stücke von Kunsthandwerkern',
+            'fr': 'Pièces uniques de créateurs',
+            'es': 'Piezas únicas de artesanos',
+            'it': 'Pezzi unici dagli artigiani',
+            'pt': 'Peças únicas de artesãos',
+            'ar': 'قطع فريدة من صانعين',
+            'ja': '職人による一点物',
+            'zh': '来自工匠的独特作品',
+            'ko': '장인이 만든 독특한 작품',
+            'hi': 'कारीगरों की अनूठी कृतियाँ',
+            'bn': 'কারিগরদের অনন্য সৃষ্টি',
+            'sw': 'Vipande vya kipekee kutoka kwa wabunifu',
+            'tr': 'Ustalardan Eşsiz Parçalar',
+            'sr': 'Jedinstveni komadi od majstora',
+            'mk': 'Уникатни парчиња од мајстори'
+        } %}
+        <h2>{{ shop_headline.get(lang, 'Unique Pieces from Makers') }}</h2>
         <p class="text-muted">Discover unique pieces from independent makers worldwide</p>
     </div>
     <div class="col-auto">
