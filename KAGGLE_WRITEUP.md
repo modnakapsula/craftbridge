@@ -6,7 +6,7 @@
 
 We are surrounded by extraordinary people. Architects. Engineers. Designers. People who built careers on precision, expertise, and craft — and then the world changed.
 
-A close relative of mine is an architect working as a freelancer in Macedonia. She turned to something she had always loved: Tiffany stained glass. Each lamp she makes contains 334 hand-cut pieces of glass, assembled and soldered by hand. Each piece is unique. The kind of work that sells for €200 in Amsterdam or Paris.
+A close relative of mine is an architect working as a freelancer in Macedonia. She turned to something she had always loved: Tiffany stained glass — and named her atelier ArtIdea. Each lamp she makes contains 334 hand-cut pieces of glass, assembled and soldered by hand. Each piece is unique. The kind of work that sells for €200 in Amsterdam or Paris.
 
 But Nataša lives in the Balkans. And writing a product listing in German, French, or Japanese? That's not a skill they teach in architecture school.
 
