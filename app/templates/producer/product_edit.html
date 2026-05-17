@@ -215,6 +215,9 @@ function renderMarketingResults(results, tone, progressDiv) {
                 <button class="btn btn-sm btn-outline-secondary py-0 flex-shrink-0" title="Copy headline"
                     onclick="navigator.clipboard.writeText(this.dataset.t); this.innerHTML='✓'; setTimeout(()=>this.innerHTML='<i class=\\'bi bi-clipboard\\'></i>',1500)"
                     data-t="${escapedHeadline}"><i class="bi bi-clipboard"></i></button>
+                <button class="btn btn-sm btn-outline-primary py-0 flex-shrink-0" title="Use as product name"
+                    onclick="document.querySelector('input[name=name]').value=this.dataset.t; this.innerHTML='✓'; setTimeout(()=>this.innerHTML='→ Name',1500)"
+                    data-t="${escapedHeadline}">→ Name</button>
             </div>` : ''}
             <div class="d-flex align-items-start gap-2">
                 <p class="mb-0 small flex-grow-1">${body}</p>
