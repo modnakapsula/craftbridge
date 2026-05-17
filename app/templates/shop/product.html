@@ -8,7 +8,7 @@
             <div class="carousel-inner rounded-3 overflow-hidden">
                 {% for img in product.images %}
                 <div class="carousel-item {{ 'active' if loop.first }}">
-                    <img src="{{ img }}" class="d-block w-100" style="height:400px;object-fit:cover;" alt="{{ product.name }}">
+                    <img src="{{ img }}" class="d-block w-100" style="height:400px;object-fit:contain;background:#f8f8f8;" alt="{{ product.name }}">
                 </div>
                 {% endfor %}
             </div>
