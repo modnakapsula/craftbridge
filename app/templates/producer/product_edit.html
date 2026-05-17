@@ -115,23 +115,19 @@
                     <div id="photoPreview" class="d-flex flex-wrap gap-2 mt-2"></div>
                 </div>
 
-                <input type="hidden" name="do_translate" id="doTranslate" value="0">
                 <div class="d-flex gap-2 flex-wrap">
                     <button type="submit" class="btn btn-primary" id="saveBtn">
                         <i class="bi bi-floppy"></i> Save Product
                     </button>
-                    <button type="submit" class="btn btn-success" id="translateBtn"
-                        onclick="document.getElementById('doTranslate').value='1'">
+                    <button type="button" class="btn btn-success" id="translateBtn">
                         <i class="bi bi-translate"></i> Save & Translate with Gemma
                     </button>
                     <a href="{{ url_for('producer.products') }}" class="btn btn-outline-secondary">Cancel</a>
                 </div>
 
-                <div id="savingMsg" class="d-none mt-3 alert alert-info">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="spinner-border spinner-border-sm" role="status"></div>
-                        <span>Translating with Gemma AI... this may take up to 60 seconds.</span>
-                    </div>
+                <div id="translateProgress" class="d-none mt-3">
+                    <div class="alert alert-info mb-2">Translating language by language — please wait...</div>
+                    <div id="langStatus" class="d-flex flex-wrap gap-2"></div>
                 </div>
             </form>
         </div>
@@ -266,16 +262,51 @@ document.getElementById('btnCasual').addEventListener('click', () => generateMar
 document.getElementById('btnTeen').addEventListener('click', () => generateMarketing('teen'));
 
 // Loading state on save
-let clickedBtn = null;
-document.getElementById('saveBtn').addEventListener('click', function() { clickedBtn = this; });
-document.getElementById('translateBtn').addEventListener('click', function() { clickedBtn = this; });
-document.querySelector('form').addEventListener('submit', function() {
-    if (clickedBtn) {
-        clickedBtn.disabled = true;
-        const isTranslate = clickedBtn.id === 'translateBtn';
-        clickedBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>' + (isTranslate ? 'Translating...' : 'Saving...');
-        if (isTranslate) document.getElementById('savingMsg').classList.remove('d-none');
+document.getElementById('saveBtn').addEventListener('click', function() {
+    this.disabled = true;
+    this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving...';
+});
+
+// AJAX translate — language by language
+document.getElementById('translateBtn').addEventListener('click', async function() {
+    const langs = [...document.querySelectorAll('input[name="target_countries"]:checked')].map(cb => cb.value);
+    if (langs.length === 0) { alert('Select at least one target language.'); return; }
+    const description = document.getElementById('description').value.trim();
+    const name = document.querySelector('input[name="name"]').value.trim();
+    if (!description) { alert('Enter a description first.'); return; }
+
+    this.disabled = true;
+    this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Translating...';
+    document.getElementById('translateProgress').classList.remove('d-none');
+    const statusDiv = document.getElementById('langStatus');
+    statusDiv.innerHTML = '';
+
+    const productId = {{ product.id }};
+    const sourceLang = '{{ current_user.language }}';
+
+    for (const lang of langs) {
+        const badge = document.createElement('span');
+        badge.className = 'badge bg-secondary';
+        badge.textContent = '⏳ ' + lang.toUpperCase();
+        statusDiv.appendChild(badge);
+
+        try {
+            const resp = await fetch('/api/translate-one', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({product_id: productId, lang, description, name, source_lang: sourceLang})
+            });
+            badge.className = resp.ok ? 'badge bg-success' : 'badge bg-danger';
+            badge.textContent = (resp.ok ? '✓ ' : '✗ ') + lang.toUpperCase();
+        } catch(e) {
+            badge.className = 'badge bg-danger';
+            badge.textContent = '✗ ' + lang.toUpperCase();
+        }
     }
+
+    this.disabled = false;
+    this.innerHTML = '<i class="bi bi-translate"></i> Save & Translate with Gemma';
+    document.querySelector('.alert.alert-info', document.getElementById('translateProgress')).textContent = 'Translation complete!';
 });
 
 // Dynamic sizes placeholder based on category
