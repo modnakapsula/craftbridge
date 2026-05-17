@@ -315,6 +315,11 @@ document.getElementById('translateBtn').addEventListener('click', async function
     document.querySelector('.alert.alert-info', document.getElementById('translateProgress')).textContent = 'Translation complete!';
 });
 
+// Auto-trigger translation if redirected from new product form
+if (new URLSearchParams(window.location.search).get('translate') === '1') {
+    setTimeout(() => document.getElementById('translateBtn').click(), 500);
+}
+
 // Copy translation buttons
 document.querySelectorAll('.copy-btn').forEach(btn => {
     btn.addEventListener('click', function() {

@@ -140,22 +140,9 @@ def product_new():
                 product.images = images
                 db.session.commit()
 
+        flash("Product saved.", "success")
         if request.form.get("do_translate") == "1" and description and target_countries:
-            desc_translations = {}
-            name_translations = {}
-            for lang in target_countries:
-                try:
-                    desc_translations[lang] = gemma.translate_one(description, lang, current_user.language)
-                    name_translations[lang] = gemma.translate_one(name, lang, current_user.language)
-                except Exception:
-                    pass
-            product.descriptions_translated = desc_translations
-            product.names_translated = name_translations
-            db.session.commit()
-            flash(f"Product saved and translated to {len(desc_translations)} languages!", "success")
-        else:
-            flash("Product saved.", "success")
-
+            return redirect(url_for("producer.product_edit", product_id=product.id, translate="1"))
         return redirect(url_for("producer.products"))
 
     return render_template("producer/product_form.html")
