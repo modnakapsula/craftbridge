@@ -76,6 +76,7 @@ Buyer Shop (session-based language switching, 16 languages)
 **Stack:**
 - Backend: Flask 3.1, SQLAlchemy, Flask-Login
 - AI: google-genai 2.0 SDK, model `gemma-4-26b-a4b-it` with `gemma-4-31b-it` fallback
+- Local AI: Ollama support built-in (`USE_OLLAMA=true`) — switch to local Gemma with zero code changes
 - Frontend: Bootstrap 5, vanilla JavaScript (Web Speech API for voice, AJAX for translation)
 - Storage: PostgreSQL (Railway), Cloudinary (images)
 - Deployment: Railway with gunicorn, PWA-enabled
@@ -93,6 +94,8 @@ Buyer Shop (session-based language switching, 16 languages)
 **Cloudinary integration:** Product images are uploaded to Cloudinary on save, making them persistent across Railway deployments. Each product has its images stored under `craftbridge/{product_id}/`.
 
 **PWA support:** The app is installable as a Progressive Web App on both Android and iOS, allowing producers to manage products directly from their phone's home screen.
+
+**Ollama local mode:** CraftBridge supports running entirely locally via Ollama with a single environment variable (`USE_OLLAMA=true`). The same application code runs against a local Gemma model — no API keys, no internet dependency, no cost per call. This makes the platform viable for offline use, privacy-sensitive environments, and edge deployments.
 
 ## Impact
 
