@@ -30,10 +30,14 @@
                             <small class="opacity-50 d-block mt-1"><i class="bi bi-translate"></i> {{ msg.content }}</small>
                             {% else %}
                             <div class="msg-content-{{ msg.id }}">{{ msg.content }}</div>
+                            {% if lead.producer.language != session.get('language', 'en') %}
                             <button class="btn btn-sm btn-outline-secondary py-0 mt-1 translate-msg-btn"
-                                data-msg-id="{{ msg.id }}" data-lang="{{ session.get('language', 'en') }}">
+                                data-msg-id="{{ msg.id }}"
+                                data-lang="{{ session.get('language', 'en') }}"
+                                data-source="{{ lead.producer.language }}">
                                 <i class="bi bi-translate"></i>
                             </button>
+                            {% endif %}
                             {% endif %}
                         {% else %}
                         <div>{{ msg.content }}</div>
@@ -70,7 +74,7 @@
                 const resp = await fetch('/api/translate-message', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({message_id: parseInt(msgId), target_lang: lang})
+                    body: JSON.stringify({message_id: parseInt(msgId), target_lang: lang, source_lang: this.dataset.source || 'en'})
                 });
                 const data = await resp.json();
                 if (data.translated) {

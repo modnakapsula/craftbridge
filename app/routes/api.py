@@ -53,8 +53,9 @@ def translate_message():
     producer_authenticated = current_user.is_authenticated and hasattr(current_user, "products")
     if not (buyer_id == lead.buyer_id or (producer_authenticated and current_user.id == lead.producer_id)):
         return jsonify({"error": "unauthorized"}), 403
+    source_lang = data.get("source_lang", "en")
     try:
-        translated = gemma.translate_one(msg.content, target_lang)
+        translated = gemma.translate_one(msg.content, target_lang, source_lang)
         msg.translated_content = translated
         db.session.commit()
         return jsonify({"translated": translated})
