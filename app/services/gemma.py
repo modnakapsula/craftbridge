@@ -20,16 +20,16 @@ def _get_client():
     return _client
 
 
-def _call(prompt: str) -> str:
+def _call(prompt: str, max_tokens: int = 2048) -> str:
     if os.getenv("USE_OLLAMA", "false").lower() == "true":
         return _call_ollama(prompt)
-    return _call_google(prompt)
+    return _call_google(prompt, max_tokens)
 
 
 _MODELS = ["gemma-4-26b-a4b-it", "gemma-4-31b-it"]
 
 
-def _call_google(prompt: str) -> str:
+def _call_google(prompt: str, max_tokens: int = 2048) -> str:
     client = _get_client()
     primary = os.getenv("GEMMA_MODEL", "gemma-4-26b-a4b-it")
     fallbacks = [m for m in _MODELS if m != primary]
@@ -39,7 +39,7 @@ def _call_google(prompt: str) -> str:
                 model=model,
                 contents=prompt,
                 config=types.GenerateContentConfig(
-                    max_output_tokens=2048,
+                    max_output_tokens=max_tokens,
                 )
             )
             return response.text.strip()
@@ -70,7 +70,7 @@ def translate_one(text: str, lang: str, source_language: str = "en") -> str:
     lang_name = _LANG_NAMES.get(lang, lang)
     prompt = f"Translate the following text to {lang_name}. Output only the translated text, no explanations, no notes, no original text:\n\n{text}"
     try:
-        raw = _call(prompt).strip()
+        raw = _call(prompt, max_tokens=512).strip()
         return _extract_last_line(raw)
     except Exception:
         return text
@@ -151,7 +151,7 @@ Output exactly two parts, nothing else:
 Format:
 HEADLINE: <headline here>
 BODY: <body text here>"""
-    result = _call(prompt)
+    result = _call(prompt, max_tokens=1024)
     headline = ""
     body = ""
     for line in result.strip().split('\n'):
