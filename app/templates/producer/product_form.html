@@ -262,11 +262,17 @@ async function generateMarketing(tone) {
         progressDiv.className = 'd-flex flex-wrap gap-1 mt-2';
         panel.appendChild(progressDiv);
 
+        // Pre-create all badges, then translate in parallel batches of 4
+        const mktBadges = {};
         for (const lang of otherLangs) {
             const badge = document.createElement('span');
             badge.className = 'badge bg-secondary';
             badge.textContent = '⏳ ' + lang.toUpperCase();
             progressDiv.appendChild(badge);
+            mktBadges[lang] = badge;
+        }
+
+        async function translateMarketingOne(lang) {
             try {
                 const resp = await fetch('/producer/translate-marketing-one', {
                     method: 'POST',
@@ -276,17 +282,21 @@ async function generateMarketing(tone) {
                 const data = await resp.json();
                 if (data.text) {
                     results[lang] = data.text;
-                    badge.className = 'badge bg-success';
-                    badge.textContent = '✓ ' + lang.toUpperCase();
+                    mktBadges[lang].className = 'badge bg-success';
+                    mktBadges[lang].textContent = '✓ ' + lang.toUpperCase();
                     renderMarketingResults(results, tone, progressDiv);
                 } else {
-                    badge.className = 'badge bg-danger';
-                    badge.textContent = '✗ ' + lang.toUpperCase();
+                    mktBadges[lang].className = 'badge bg-danger';
+                    mktBadges[lang].textContent = '✗ ' + lang.toUpperCase();
                 }
             } catch(e) {
-                badge.className = 'badge bg-danger';
-                badge.textContent = '✗ ' + lang.toUpperCase();
+                mktBadges[lang].className = 'badge bg-danger';
+                mktBadges[lang].textContent = '✗ ' + lang.toUpperCase();
             }
+        }
+
+        for (let i = 0; i < otherLangs.length; i += 4) {
+            await Promise.allSettled(otherLangs.slice(i, i + 4).map(translateMarketingOne));
         }
     } catch(e) {
         alert('Request failed: ' + e.message);
