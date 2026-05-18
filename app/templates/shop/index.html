@@ -32,15 +32,22 @@
 </div>
 
 <form class="row g-2 mb-4" method="GET">
-    <div class="col-md-6">
+    <div class="col-md-5">
         <input type="text" name="search" class="form-control" placeholder="Search products..." value="{{ search }}">
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <select name="category" class="form-select">
             <option value="">All Categories</option>
             {% for cat in categories %}
             <option value="{{ cat }}" {{ 'selected' if category == cat }}>{{ cat }}</option>
             {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="sort" class="form-select">
+            <option value="newest" {{ 'selected' if sort == 'newest' }}>Newest</option>
+            <option value="price_asc" {{ 'selected' if sort == 'price_asc' }}>Price ↑</option>
+            <option value="price_desc" {{ 'selected' if sort == 'price_desc' }}>Price ↓</option>
         </select>
     </div>
     <div class="col-md-2">

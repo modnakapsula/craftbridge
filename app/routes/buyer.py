@@ -38,6 +38,7 @@ CATEGORIES = ["Clothing", "Knitwear", "Accessories", "Home Decor", "Jewelry", "O
 def shop():
     category = request.args.get("category", "")
     search = request.args.get("search", "")
+    sort = request.args.get("sort", "newest")
     lang = session.get("language", "en")
 
     query = Product.query.filter_by(is_active=True)
@@ -46,9 +47,16 @@ def shop():
     if search:
         query = query.filter(Product.name.ilike(f"%{search}%"))
 
-    products = query.order_by(Product.created_at.desc()).all()
+    if sort == "price_asc":
+        query = query.order_by(Product.price.asc().nulls_last())
+    elif sort == "price_desc":
+        query = query.order_by(Product.price.desc().nulls_last())
+    else:
+        query = query.order_by(Product.created_at.desc())
+
+    products = query.all()
     return render_template("shop/index.html", products=products, category=category,
-                           search=search, lang=lang, categories=CATEGORIES)
+                           search=search, sort=sort, lang=lang, categories=CATEGORIES)
 
 
 @buyer_bp.route("/product/<int:product_id>")
