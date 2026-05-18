@@ -70,7 +70,7 @@ def translate_one(text: str, lang: str, source_language: str = "en") -> str:
     lang_name = _LANG_NAMES.get(lang, lang)
     prompt = f"Translate the following text to {lang_name}. Output only the translated text, no explanations, no notes, no original text:\n\n{text}"
     try:
-        raw = _call(prompt, max_tokens=512).strip()
+        raw = _call(prompt, max_tokens=1024).strip()
         return _extract_last_line(raw)
     except Exception:
         return text
@@ -151,7 +151,7 @@ Output exactly two parts, nothing else:
 Format:
 HEADLINE: <headline here>
 BODY: <body text here>"""
-    result = _call(prompt, max_tokens=1024)
+    result = _call(prompt, max_tokens=1536)
     headline = ""
     body = ""
     for line in result.strip().split('\n'):
