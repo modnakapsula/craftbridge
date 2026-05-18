@@ -30,10 +30,10 @@
                             <small class="opacity-50 d-block mt-1"><i class="bi bi-translate"></i> {{ msg.content }}</small>
                             {% else %}
                             <div class="msg-content-{{ msg.id }}">{{ msg.content }}</div>
-                            {% if lead.producer.language != session.get('language', 'en') %}
+                            {% if lead.producer.language != lead.buyer.language %}
                             <button class="btn btn-sm btn-outline-secondary py-0 mt-1 translate-msg-btn"
                                 data-msg-id="{{ msg.id }}"
-                                data-lang="{{ session.get('language', 'en') }}"
+                                data-lang="{{ lead.buyer.language }}"
                                 data-source="{{ lead.producer.language }}">
                                 <i class="bi bi-translate"></i>
                             </button>
