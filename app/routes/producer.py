@@ -278,7 +278,10 @@ def messages(lead_id):
         content = request.form.get("content", "").strip()
         if content:
             buyer_lang = lead.buyer.language or "en"
-            translated = gemma.translate_one(content, buyer_lang, current_user.language) if buyer_lang != current_user.language else None
+            try:
+                translated = gemma.translate_one(content, buyer_lang, current_user.language) if buyer_lang != current_user.language else None
+            except Exception:
+                translated = None
             db.session.add(Message(
                 lead_id=lead_id,
                 sender_type="producer",

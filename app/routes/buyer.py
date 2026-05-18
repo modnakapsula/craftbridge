@@ -170,7 +170,10 @@ def messages(lead_id):
             buyer = Buyer.query.get(buyer_id)
             buyer_lang = buyer.language or "en"
             producer_lang = lead.producer.language or "en"
-            translated = gemma.translate_one(content, producer_lang, buyer_lang) if buyer_lang != producer_lang else None
+            try:
+                translated = gemma.translate_one(content, producer_lang, buyer_lang) if buyer_lang != producer_lang else None
+            except Exception:
+                translated = None
             db.session.add(Message(
                 lead_id=lead_id,
                 sender_type="buyer",
