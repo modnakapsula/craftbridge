@@ -46,7 +46,14 @@ Each tone is generated in all selected target languages simultaneously. Every la
 
 A maker who struggled to write even a single product description in her own language now has three professionally written marketing posts — in 10 languages — ready to publish in minutes.
 
-### 3. Voice-to-Description
+### 3. Multilingual Buyer–Producer Messaging
+Once a buyer expresses interest in a product, CraftBridge opens a direct message thread between the buyer and the maker. Both sides can communicate in their own language — Gemma 4 translates each message on demand with a single tap.
+
+A buyer in Serbia writes in Serbian. The Macedonian maker reads the message translated into Macedonian. The maker replies in Macedonian — the buyer reads it in Serbian. Neither side needs to know the other's language, and neither needs a translator. The conversation flows naturally, as if they share a language.
+
+Translation is triggered per message via AJAX — it never blocks sending or receiving. Results are saved to the database so each message is only translated once.
+
+### 4. Voice-to-Description
 Producers can describe their product by speaking — in their own language, in their own words. They can talk about the materials, the technique, the inspiration behind the piece, or anything they want buyers to know. The Web Speech API captures audio and transcribes it in the producer's native language (auto-detected from their profile: sr-RS, de-DE, mk-MK, ar-SA, etc.). Gemma 4 then uses this natural, personal input as the source for translation and marketing generation.
 
 This removes the final barrier: the producer doesn't need to write marketing copy, type in a foreign language, or even know what "product description" means. They just talk — the way they would explain their work to a friend.
@@ -64,6 +71,7 @@ Gemma 4 API (google-genai SDK)
   ├── Translation: per-language AJAX calls → saved incrementally
   ├── Marketing: 1 generation call per tone → translated separately
   ├── Voice cleanup: transcription polished before use
+  ├── Message translation: on-demand per message, saved to DB
   └── Fallback: gemma-4-31b-it if primary model errors
        ↓
 PostgreSQL (Railway production)
@@ -105,7 +113,7 @@ The artisan economy is estimated at $400 billion annually, yet the vast majority
 
 By combining Gemma 4's multilingual capabilities with voice input, per-language translation, and multi-tone marketing generation, CraftBridge gives any maker — regardless of their language, education, or technical skills — the same marketing tools available to a professional e-commerce brand.
 
-An artisan maker can describe her Tiffany lamp in Macedonian using her voice. In minutes, she has a product listing in 10 languages, three versions of marketing copy ready for Instagram, and a global shop where buyers from Tokyo to Berlin can discover her work — in their own language.
+An artisan maker can describe her Tiffany lamp in Macedonian using her voice. In minutes, she has a product listing in 10 languages, three versions of marketing copy ready for Instagram, and a global shop where buyers from Tokyo to Berlin can discover her work — in their own language. And when a buyer reaches out, they can negotiate delivery, measurements, and customization — each in their own language, with Gemma bridging the conversation in real time.
 
 This is what digital equity looks like in practice: not just access to technology, but access to economic opportunity.
 
