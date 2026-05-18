@@ -24,9 +24,17 @@
                 <div class="d-flex mb-3 {{ 'justify-content-end' if msg.sender_type == 'buyer' else '' }}">
                     <div class="p-3 rounded-3 {{ 'bg-primary text-white' if msg.sender_type == 'buyer' else 'bg-light' }}"
                          style="max-width:70%;">
-                        {% if msg.sender_type == 'producer' and msg.translated_content %}
-                        <div>{{ msg.translated_content }}</div>
-                        <small class="opacity-50 d-block mt-1"><i class="bi bi-translate"></i> {{ msg.content }}</small>
+                        {% if msg.sender_type == 'producer' %}
+                            {% if msg.translated_content %}
+                            <div>{{ msg.translated_content }}</div>
+                            <small class="opacity-50 d-block mt-1"><i class="bi bi-translate"></i> {{ msg.content }}</small>
+                            {% else %}
+                            <div class="msg-content-{{ msg.id }}">{{ msg.content }}</div>
+                            <button class="btn btn-sm btn-outline-secondary py-0 mt-1 translate-msg-btn"
+                                data-msg-id="{{ msg.id }}" data-lang="{{ session.get('language', 'en') }}">
+                                <i class="bi bi-translate"></i>
+                            </button>
+                            {% endif %}
                         {% else %}
                         <div>{{ msg.content }}</div>
                         {% endif %}
@@ -51,5 +59,38 @@
 <script>
     const box = document.getElementById('chatBox');
     if (box) box.scrollTop = box.scrollHeight;
+
+    document.querySelectorAll('.translate-msg-btn').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            const msgId = this.dataset.msgId;
+            const lang = this.dataset.lang;
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+            try {
+                const resp = await fetch('/api/translate-message', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message_id: parseInt(msgId), target_lang: lang})
+                });
+                const data = await resp.json();
+                if (data.translated) {
+                    const contentDiv = document.querySelector('.msg-content-' + msgId);
+                    const original = contentDiv.textContent;
+                    contentDiv.textContent = data.translated;
+                    const small = document.createElement('small');
+                    small.className = 'opacity-50 d-block mt-1';
+                    small.innerHTML = '<i class="bi bi-translate"></i> ' + original;
+                    contentDiv.after(small);
+                    this.remove();
+                } else {
+                    this.innerHTML = '<i class="bi bi-translate"></i>';
+                    this.disabled = false;
+                }
+            } catch(e) {
+                this.innerHTML = '<i class="bi bi-translate"></i>';
+                this.disabled = false;
+            }
+        });
+    });
 </script>
 {% endblock %}

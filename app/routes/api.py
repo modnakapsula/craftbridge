@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
 from app import db
-from app.models import Product
+from app.models import Product, Message, Lead
 from app.services import gemma
 
 api_bp = Blueprint("api", __name__)
@@ -35,6 +35,29 @@ def translate_one():
         product.names_translated = names
         db.session.commit()
         return jsonify({"lang": lang, "description": desc_translated, "name": name_translated})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@api_bp.route("/translate-message", methods=["POST"])
+def translate_message():
+    from flask import session
+    data = request.get_json()
+    message_id = data.get("message_id")
+    target_lang = data.get("target_lang", "en")
+    if not message_id:
+        return jsonify({"error": "missing message_id"}), 400
+    msg = Message.query.get_or_404(message_id)
+    lead = Lead.query.get(msg.lead_id)
+    buyer_id = session.get("buyer_id")
+    producer_authenticated = current_user.is_authenticated and hasattr(current_user, "products")
+    if not (buyer_id == lead.buyer_id or (producer_authenticated and current_user.id == lead.producer_id)):
+        return jsonify({"error": "unauthorized"}), 403
+    try:
+        translated = gemma.translate_one(msg.content, target_lang)
+        msg.translated_content = translated
+        db.session.commit()
+        return jsonify({"translated": translated})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
