@@ -9,12 +9,15 @@
             </a>
         </div>
         <div class="card">
-            <div class="card-header">
-                <strong>{{ lead.product.name }}</strong>
-                <span class="badge bg-{{ 'info' if lead.status == 'new' else 'warning text-dark' if lead.status == 'contacted' else 'success' }} ms-2">
-                    {{ lead.status }}
-                </span>
-                <small class="text-muted ms-2">Buyer: {{ lead.buyer.name or lead.buyer.email }}</small>
+            <div class="card-header d-flex align-items-center gap-3">
+                {% if lead.product.images %}
+                <img src="{{ lead.product.images[0] }}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0;" alt="{{ lead.product.name }}">
+                {% endif %}
+                <div>
+                    <strong>{{ lead.product.name }}</strong>
+                    <span class="badge bg-{{ 'info' if lead.status == 'new' else 'warning text-dark' if lead.status == 'contacted' else 'success' }} ms-2">{{ lead.status }}</span>
+                    <div class="text-muted small">Buyer: {{ lead.buyer.name or lead.buyer.email }}</div>
+                </div>
             </div>
             <div class="card-body" style="max-height:400px;overflow-y:auto;" id="chatBox">
                 {% for msg in messages %}
