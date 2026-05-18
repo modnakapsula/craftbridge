@@ -44,6 +44,7 @@ class Product(db.Model):
     _delivery_prices = db.Column("delivery_prices", db.Text, default="{}")
     _images = db.Column("images", db.Text, default="[]")
     is_active = db.Column(db.Boolean, default=True)
+    sort_order = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     leads = db.relationship("Lead", backref="product", lazy=True)

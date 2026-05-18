@@ -49,10 +49,14 @@ def create_app():
 
     with app.app_context():
         db.create_all()
-        try:
-            db.session.execute(text("ALTER TABLE products ADD COLUMN IF NOT EXISTS names_translated TEXT DEFAULT '{}'"))
-            db.session.commit()
-        except Exception:
-            db.session.rollback()
+        for sql in [
+            "ALTER TABLE products ADD COLUMN IF NOT EXISTS names_translated TEXT DEFAULT '{}'",
+            "ALTER TABLE products ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0",
+        ]:
+            try:
+                db.session.execute(text(sql))
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
 
     return app

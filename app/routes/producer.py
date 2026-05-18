@@ -159,6 +159,7 @@ def product_edit(product_id):
         product.currency = request.form.get("currency", "EUR")
         product.category = request.form.get("category", "")
         product.sizes_available = request.form.get("sizes", "")
+        product.sort_order = int(request.form.get("sort_order", 0) or 0)
         target_countries = request.form.getlist("target_countries")
         product.target_countries = target_countries
 

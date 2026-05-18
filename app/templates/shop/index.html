@@ -45,6 +45,7 @@
     </div>
     <div class="col-md-2">
         <select name="sort" class="form-select">
+            <option value="featured" {{ 'selected' if sort == 'featured' }}>Featured</option>
             <option value="newest" {{ 'selected' if sort == 'newest' }}>Newest</option>
             <option value="price_asc" {{ 'selected' if sort == 'price_asc' }}>Price ↑</option>
             <option value="price_desc" {{ 'selected' if sort == 'price_desc' }}>Price ↓</option>

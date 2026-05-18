@@ -86,6 +86,13 @@
                     <input type="text" name="sizes" class="form-control" id="sizesInput" value="{{ product.sizes_available or '' }}">
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Display Order
+                        <small class="text-muted fw-normal">— lower number appears first in shop (0 = default)</small>
+                    </label>
+                    <input type="number" name="sort_order" class="form-control" style="max-width:150px;" min="0" value="{{ product.sort_order or 0 }}">
+                </div>
+
                 <div class="mb-4">
                     <label class="form-label fw-bold">Target Markets — select to retranslate</label>
                     <div class="row">
