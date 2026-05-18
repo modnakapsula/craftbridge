@@ -39,7 +39,7 @@ def _call_google(prompt: str) -> str:
                 model=model,
                 contents=prompt,
                 config=types.GenerateContentConfig(
-                    max_output_tokens=1024,
+                    max_output_tokens=2048,
                 )
             )
             return response.text.strip()
@@ -68,7 +68,7 @@ def _call_ollama(prompt: str) -> str:
 
 def translate_one(text: str, lang: str, source_language: str = "en") -> str:
     lang_name = _LANG_NAMES.get(lang, lang)
-    prompt = f"Translate this text to {lang_name}. Return only the translation, nothing else:\n{text}"
+    prompt = f"Translate the following text to {lang_name}. Output only the translated text, no explanations, no notes, no original text:\n\n{text}"
     try:
         raw = _call(prompt).strip()
         return _extract_last_line(raw)
