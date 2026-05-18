@@ -21,7 +21,12 @@
                 <div class="d-flex mb-3 {{ 'justify-content-end' if msg.sender_type == 'buyer' else '' }}">
                     <div class="p-3 rounded-3 {{ 'bg-primary text-white' if msg.sender_type == 'buyer' else 'bg-light' }}"
                          style="max-width:70%;">
+                        {% if msg.sender_type == 'producer' and msg.translated_content %}
+                        <div>{{ msg.translated_content }}</div>
+                        <small class="opacity-50 d-block mt-1"><i class="bi bi-translate"></i> {{ msg.content }}</small>
+                        {% else %}
                         <div>{{ msg.content }}</div>
+                        {% endif %}
                         <small class="opacity-75">{{ msg.created_at.strftime('%d %b %H:%M') }}</small>
                     </div>
                 </div>

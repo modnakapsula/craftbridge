@@ -277,11 +277,14 @@ def messages(lead_id):
     if request.method == "POST":
         content = request.form.get("content", "").strip()
         if content:
+            buyer_lang = lead.buyer.language or "en"
+            translated = gemma.translate_one(content, buyer_lang, current_user.language) if buyer_lang != current_user.language else None
             db.session.add(Message(
                 lead_id=lead_id,
                 sender_type="producer",
                 sender_id=current_user.id,
                 content=content,
+                translated_content=translated,
             ))
             lead.status = "contacted"
             db.session.commit()
