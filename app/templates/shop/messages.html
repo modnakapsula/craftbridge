@@ -25,7 +25,7 @@
                     <div class="p-3 rounded-3 {{ 'bg-primary text-white' if msg.sender_type == 'buyer' else 'bg-light' }}"
                          style="max-width:70%;">
                         {% if msg.sender_type == 'producer' %}
-                            {% if msg.translated_content %}
+                            {% if msg.translated_content and msg.translated_content != msg.content %}
                             <div>{{ msg.translated_content }}</div>
                             <small class="opacity-50 d-block mt-1"><i class="bi bi-translate"></i> {{ msg.content }}</small>
                             {% else %}
