@@ -54,7 +54,7 @@ def shop():
     elif sort == "newest":
         query = query.order_by(Product.created_at.desc())
     else:
-        query = query.order_by(Product.sort_order.asc(), Product.created_at.desc())
+        query = query.order_by(Product.sort_order.asc().nulls_last(), Product.created_at.desc())
 
     products = query.all()
     return render_template("shop/index.html", products=products, category=category,
