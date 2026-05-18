@@ -55,7 +55,7 @@ def translate_message():
         return jsonify({"error": "unauthorized"}), 403
     source_lang = data.get("source_lang", "en")
     try:
-        translated = gemma.translate_one(msg.content, target_lang, source_lang)
+        translated = gemma.translate_one(msg.content, target_lang, source_lang, max_tokens=512)
         msg.translated_content = translated
         db.session.commit()
         return jsonify({"translated": translated})
