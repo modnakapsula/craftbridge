@@ -58,12 +58,26 @@
                     </ul>
                 </li>
                 {% if session.get('buyer_id') %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('buyer.my_leads') }}"><i class="bi bi-heart"></i> My Leads</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link position-relative" href="{{ url_for('buyer.my_leads') }}">
+                            <i class="bi bi-heart"></i> My Leads
+                            {% if buyer_unread > 0 %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.65rem;">{{ buyer_unread }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('buyer.logout') }}">Logout</a></li>
                 {% else %}
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('buyer.login') }}">Buyer Login</a></li>
                 {% endif %}
-                <li class="nav-item"><a class="nav-link text-purple fw-bold" href="{{ url_for('producer.dashboard') }}"><i class="bi bi-shop"></i> Producer Portal</a></li>
+                <li class="nav-item">
+                    <a class="nav-link text-purple fw-bold position-relative" href="{{ url_for('producer.dashboard') }}">
+                        <i class="bi bi-shop"></i> Producer Portal
+                        {% if producer_unread > 0 %}
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.65rem;">{{ producer_unread }}</span>
+                        {% endif %}
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

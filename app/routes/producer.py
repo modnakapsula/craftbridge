@@ -286,4 +286,9 @@ def messages(lead_id):
             lead.status = "contacted"
             db.session.commit()
     msgs = Message.query.filter_by(lead_id=lead_id).order_by(Message.created_at).all()
+    from datetime import datetime
+    for msg in msgs:
+        if msg.sender_type == "buyer" and msg.read_at is None:
+            msg.read_at = datetime.utcnow()
+    db.session.commit()
     return render_template("producer/messages.html", lead=lead, messages=msgs)

@@ -1,6 +1,6 @@
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from dotenv import load_dotenv
 from sqlalchemy import text
 import os
@@ -46,6 +46,33 @@ def create_app():
     @app.route("/")
     def index():
         return redirect(url_for("buyer.shop"))
+
+    @app.context_processor
+    def inject_unread_counts():
+        from app.models import Lead, Message
+        buyer_unread = 0
+        producer_unread = 0
+        try:
+            buyer_id = session.get("buyer_id")
+            if buyer_id:
+                lead_ids = [l.id for l in Lead.query.filter_by(buyer_id=buyer_id).all()]
+                if lead_ids:
+                    buyer_unread = Message.query.filter(
+                        Message.lead_id.in_(lead_ids),
+                        Message.sender_type == "producer",
+                        Message.read_at.is_(None)
+                    ).count()
+            if current_user.is_authenticated and hasattr(current_user, "products"):
+                lead_ids = [l.id for l in Lead.query.filter_by(producer_id=current_user.id).all()]
+                if lead_ids:
+                    producer_unread = Message.query.filter(
+                        Message.lead_id.in_(lead_ids),
+                        Message.sender_type == "buyer",
+                        Message.read_at.is_(None)
+                    ).count()
+        except Exception:
+            pass
+        return dict(buyer_unread=buyer_unread, producer_unread=producer_unread)
 
     with app.app_context():
         db.create_all()
