@@ -49,7 +49,7 @@ A maker who struggled to write even a single product description in her own lang
 ### 3. Multilingual Buyer–Producer Messaging
 Once a buyer expresses interest in a product, CraftBridge opens a direct message thread between the buyer and the maker. Both sides can communicate in their own language — Gemma 4 translates each message on demand with a single tap.
 
-A buyer in Serbia writes in Serbian. The Macedonian maker reads the message translated into Macedonian. The maker replies in Macedonian — the buyer reads it in Serbian. Neither side needs to know the other's language, and neither needs a translator. The conversation flows naturally, as if they share a language.
+A buyer in Germany writes in German. The Macedonian maker reads the message translated into Macedonian. The maker replies in Macedonian — the buyer reads it in German. Neither side needs to know the other's language, and neither needs a translator. The conversation flows naturally, as if they share a language.
 
 Translation is triggered per message via AJAX — it never blocks sending or receiving. Results are saved to the database so each message is only translated once.
 
