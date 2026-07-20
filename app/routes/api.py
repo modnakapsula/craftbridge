@@ -27,6 +27,11 @@ def translate_one():
     try:
         desc_translated = gemma.translate_one(description, lang, source_lang)
         name_translated = gemma.translate_one(name, lang, source_lang) if name else name
+
+        # Re-fetch with a row lock right before merging: translate-one is called
+        # in parallel batches for the same product, so without locking here,
+        # concurrent commits overwrite each other's language additions.
+        product = Product.query.filter_by(id=product_id, producer_id=current_user.id).with_for_update().first()
         translations = dict(product.descriptions_translated or {})
         translations[lang] = desc_translated
         product.descriptions_translated = translations
