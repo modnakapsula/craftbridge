@@ -33,6 +33,7 @@ def _call_google(prompt: str, max_tokens: int = 2048) -> str:
     client = _get_client()
     primary = os.getenv("GEMMA_MODEL", "gemma-4-26b-a4b-it")
     fallbacks = [m for m in _MODELS if m != primary]
+    last_error = "unknown error"
     for model in [primary] + fallbacks:
         try:
             response = client.models.generate_content(
@@ -42,12 +43,19 @@ def _call_google(prompt: str, max_tokens: int = 2048) -> str:
                     max_output_tokens=max_tokens,
                 )
             )
+            if not response.text:
+                finish_reason = None
+                if response.candidates:
+                    finish_reason = response.candidates[0].finish_reason
+                last_error = f"{model} returned no text (finish_reason={finish_reason})"
+                continue
             return response.text.strip()
         except Exception as e:
+            last_error = str(e)
             if "500" in str(e) or "INTERNAL" in str(e):
                 continue
             raise
-    raise RuntimeError("All Gemma models returned 500. Try again in a moment.")
+    raise RuntimeError(f"All Gemma models failed. Last error: {last_error}")
 
 
 def _call_ollama(prompt: str) -> str:
