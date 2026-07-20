@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% set translated_langs = product.descriptions_translated.keys() | list %}
 {% block title %}Edit Product — CraftBridge{% endblock %}
 {% block content %}
 <div class="row justify-content-center">
@@ -93,7 +94,6 @@
                     <input type="number" name="sort_order" class="form-control" style="max-width:150px;" min="0" value="{{ product.sort_order or 0 }}">
                 </div>
 
-                {% set translated_langs = product.descriptions_translated.keys() | list %}
                 <div class="mb-4">
                     <div class="d-flex align-items-center gap-3 mb-2">
                         <label class="form-label fw-bold mb-0">Target Markets</label>
