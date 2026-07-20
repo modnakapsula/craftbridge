@@ -69,11 +69,8 @@ def _call_ollama(prompt: str) -> str:
 def translate_one(text: str, lang: str, source_language: str = "en", max_tokens: int = 1024) -> str:
     lang_name = _LANG_NAMES.get(lang, lang)
     prompt = f"Translate the following text to {lang_name}. Output only the translated text, no explanations, no notes, no original text:\n\n{text}"
-    try:
-        raw = _call(prompt, max_tokens=max_tokens).strip()
-        return _extract_last_line(raw)
-    except Exception:
-        return text
+    raw = _call(prompt, max_tokens=max_tokens).strip()
+    return _extract_last_line(raw)
 
 
 def translate(text: str, target_languages: list[str], source_language: str = "en") -> dict:
