@@ -389,10 +389,14 @@ document.getElementById('translateBtn').addEventListener('click', async function
                     <small>${result.description}</small>
                 </div>`;
                 container.appendChild(card);
+            } else {
+                const result = await resp.json().catch(() => ({}));
+                badges[lang].title = result.error || `HTTP ${resp.status}`;
             }
         } catch(e) {
             badges[lang].className = 'badge bg-danger';
             badges[lang].textContent = '✗ ' + lang.toUpperCase();
+            badges[lang].title = e.message;
         }
     }
 
